@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+{% if user.is_authenticated %}
+<div class="container">
+{% if order_count == 0 %}
+<div>
+	<h2 class="text-center">No Orders!</h2>
+		<br>
+		<div class="text-center">
+			<a href="{% url 'store:store' %}" class="btn btn-outline-primary">continue Shopping</a>
+		</div>
+	</div>
+{% else %}
+{% for i in order_details %}
+	{% if i.account == user.email %}
+	<div class="row">
+
+	<main class="col-md-9">
+		<article class="card">
+		<header class="card-header">
+			<strong class="d-inline-block mr-3">Invoice ID: {{i.invoice}}</strong>
+			<span>Order Date: {{i.orderdate}}</span>
+		</header>
+		<div class="card-body">
+			<div class="row"> 
+				<div class="col-md-8">
+					<h6 class="text-muted">Delivery to</h6>
+					<p>{{i.first_name}} {{i.last_name}}, <br>  
+					Phone: {{i.phone}}, Email: {{i.email}} <br>
+			    	Location: {{i.house}}, {{i.street}}, {{i.state}}, {{i.country}}. <br> 
+			    	Postal Code: {{i.postal}}
+			 		</p>
+				</div>
+				<div class="col-md-4">
+					<h6 class="text-muted">Payment</h6>
+					<span class="text-success">
+						<i class="fab fa-lg fa-cc-visa"></i>
+					    Credit:  **** **** **** {{i.card}}  
+					</span>
+					<p>Subtotal: ₹ {{i.amount}} <br>
+					 Shipping fee:  ₹ 40 <br> 
+					 <span class="b">Total:  ₹ {{i.feetotal}} </span>
+					</p>
+				</div>
+			</div> <!-- row.// -->
+		</div> <!-- card-body .// -->
+		<div class="table-responsive">
+		<table class="table table-hover">
+			{% for item in orderhistory %}
+			{% if item.inv.invoice == i.invoice %}
+			<tr>
+				<td width="65">
+					<img src="{{item.image}}" class="img-xs border">
+				</td>
+				<td> 
+					<p class="title mb-0">{{item.product}} </p>
+					<var class="price text-muted">₹ {{item.price}}</var>
+				</td>
+				<td> Seller <br> Nike clothing </td>
+				{% for i in category %}
+				{% if i.product_name == item.product %}
+				<td width="250"> <a href="" class="btn btn-outline-primary">Track order</a> <a href="{% url 'store:product_details' i.category.slug i.slug %}" class="btn btn-light"> Details </a> </td>
+				{% endif %}
+				{% endfor %}
+			</tr>
+			{% endif %}
+			{% endfor %}
+		</table>
+		</div> <!-- table-responsive .end// -->
+		</article> <!-- order-group.// --> 
+	</main>
+	</div><br> <!-- row.// -->
+
+	{% endif %}
+{% endfor %}
+{% endif %}
+</div>
+{% else %}
+<h2 class="text-center">Account is Inactive.</h2>
+<div style="display: flex; justify-content: center;">
+	<div>
+		<a href="{% url 'accounts:login' %}" class="btn btn-outline-primary">Sign in</a>
+		<a href="{% url 'accounts:register' %}" class="btn btn-outline-primary">Register</a>
+	</div>
+</div>
+{% endif %}
+
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+
+{% endblock content %}
